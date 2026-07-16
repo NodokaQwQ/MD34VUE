@@ -1,0 +1,41 @@
+{
+  "name": "md34vue",
+  "version": "0.1.0",
+  "description": "Material Design 3 styled Vue components and CSS tokens for Oproxy frontends.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Nodoka",
+  "main": "./dist/md34vue.cjs",
+  "module": "./dist/md34vue.js",
+  "types": "./dist/index.d.ts",
+  "style": "./dist/style.css",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/md34vue.js",
+      "require": "./dist/md34vue.cjs"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "typecheck": "vue-tsc --noEmit",
+    "preview": "vite preview"
+  },
+  "peerDependencies": {
+    "vue": "^3.4.0 || ^3.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.8",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "typescript": "~5.6.3",
+    "vite": "^5.4.19",
+    "vite-plugin-dts": "^4.5.4",
+    "vue": "^3.5.17",
+    "vue-tsc": "^2.2.12"
+  }
+}
