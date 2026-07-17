@@ -1,7 +1,26 @@
 <template>
-  <div class="md34-app-shell" :class="navItems?.length || $slots.rail ? 'md34-app-shell--with-rail' : ''">
-    <header class="md34-app-shell__topbar">
+  <div
+    class="md34-app-shell"
+    :class="[
+      navItems?.length || $slots.rail ? 'md34-app-shell--with-rail' : '',
+      railMode === 'mini' ? 'md34-app-shell--mini-rail' : '',
+      collapsed ? 'md34-app-shell--collapsed' : ''
+    ]"
+  >
+    <header class="md34-app-shell__topbar md34-scope-chrome">
       <div class="md34-app-shell__brand">
+        <button
+          v-if="collapsible"
+          class="md34-app-shell__collapse md34-state-layer md34-focus-ring"
+          type="button"
+          :aria-label="collapsed ? expandLabel : collapseLabel"
+          :aria-pressed="collapsed"
+          @click="emit('update:collapsed', !collapsed)"
+        >
+          <slot name="collapseIcon" :collapsed="collapsed">
+            {{ collapsed ? '›' : '‹' }}
+          </slot>
+        </button>
         <span v-if="logo || $slots.logo" class="md34-app-shell__logo">
           <slot name="logo">
             <img v-if="logo" :src="logo" alt="" />
@@ -16,7 +35,7 @@
       </div>
     </header>
 
-    <aside v-if="navItems?.length || $slots.rail" class="md34-app-shell__rail">
+    <aside v-if="navItems?.length || $slots.rail" class="md34-app-shell__rail md34-scope-chrome">
       <slot name="rail">
         <nav class="md34-app-shell__nav" aria-label="主导航">
           <component
@@ -33,14 +52,14 @@
             @click="emit('nav', item.key)"
           >
             <slot name="navIcon" :item="item" />
-            <span>{{ item.label }}</span>
-            <MdBadge v-if="item.badge !== undefined" variant="secondary">{{ item.badge }}</MdBadge>
+            <span class="md34-app-shell__nav-label">{{ item.label }}</span>
+            <MdBadge v-if="item.badge !== undefined" class="md34-app-shell__nav-badge" variant="secondary">{{ item.badge }}</MdBadge>
           </component>
         </nav>
       </slot>
     </aside>
 
-    <main class="md34-app-shell__main">
+    <main class="md34-app-shell__main md34-scope-content">
       <slot />
     </main>
   </div>
@@ -56,13 +75,24 @@ withDefaults(
     logo?: string
     navItems?: MdNavItem[]
     activeKey?: string
+    railMode?: 'standard' | 'mini'
+    collapsed?: boolean
+    collapsible?: boolean
+    collapseLabel?: string
+    expandLabel?: string
   }>(),
   {
-    title: 'Oproxy'
+    title: 'Oproxy',
+    railMode: 'standard',
+    collapsed: false,
+    collapsible: false,
+    collapseLabel: 'Collapse navigation',
+    expandLabel: 'Expand navigation'
   }
 )
 
 const emit = defineEmits<{
   nav: [key: string]
+  'update:collapsed': [value: boolean]
 }>()
 </script>

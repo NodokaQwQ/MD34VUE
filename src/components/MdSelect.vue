@@ -26,6 +26,7 @@
         :aria-labelledby="label ? `${labelId} ${buttonId}` : undefined"
         :aria-haspopup="'listbox'"
         :aria-expanded="open"
+        :aria-controls="open ? menuId : undefined"
         @click="toggle"
         @keydown.down.prevent="openMenu(0)"
         @keydown.up.prevent="openMenu(options.length - 1)"
@@ -41,33 +42,44 @@
       </button>
     </div>
 
-    <div v-if="open" class="md34-select__menu" role="listbox" :aria-labelledby="labelId" @keydown="onMenuKeydown">
-      <template v-if="options.length">
-        <div
-          v-for="(option, index) in options"
-          :key="`${String(option.value)}-${index}`"
-          class="md34-select__option"
-          :class="[
-            index === activeIndex ? 'md34-select__option--active' : '',
-            isSelected(option) ? 'md34-select__option--selected' : '',
-            option.disabled ? 'md34-select__option--disabled' : ''
-          ]"
-          role="option"
-          :aria-selected="isSelected(option)"
-          :aria-disabled="option.disabled || undefined"
-          @mouseenter="activeIndex = index"
-          @click="selectOption(option)"
-        >
-          <slot name="option" :option="option" :selected="isSelected(option)">
-            <span class="md34-select__option-label">{{ option.label }}</span>
-            <span v-if="option.description" class="md34-select__option-description">
-              {{ option.description }}
-            </span>
-          </slot>
-        </div>
-      </template>
-      <div v-else class="md34-select__empty">{{ emptyText }}</div>
-    </div>
+    <Teleport to="body">
+      <div
+        v-if="open"
+        :id="menuId"
+        ref="menuRef"
+        class="md34-select__menu"
+        role="listbox"
+        :aria-labelledby="label ? labelId : undefined"
+        :style="menuStyle"
+        @keydown="onMenuKeydown"
+      >
+        <template v-if="options.length">
+          <div
+            v-for="(option, index) in options"
+            :key="`${String(option.value)}-${index}`"
+            class="md34-select__option"
+            :class="[
+              index === activeIndex ? 'md34-select__option--active' : '',
+              isSelected(option) ? 'md34-select__option--selected' : '',
+              option.disabled ? 'md34-select__option--disabled' : ''
+            ]"
+            role="option"
+            :aria-selected="isSelected(option)"
+            :aria-disabled="option.disabled || undefined"
+            @mouseenter="activeIndex = index"
+            @click="selectOption(option)"
+          >
+            <slot name="option" :option="option" :selected="isSelected(option)">
+              <span class="md34-select__option-label">{{ option.label }}</span>
+              <span v-if="option.description" class="md34-select__option-description">
+                {{ option.description }}
+              </span>
+            </slot>
+          </div>
+        </template>
+        <div v-else class="md34-select__empty">{{ emptyText }}</div>
+      </div>
+    </Teleport>
 
     <div v-if="supportingText" class="md34-field__supporting-text">
       {{ supportingText }}
@@ -76,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { MdSelectOption } from '@/types'
 
 const props = withDefaults(
@@ -110,10 +122,13 @@ const emit = defineEmits<{
 const uid = Math.random().toString(36).slice(2, 10)
 const buttonId = computed(() => props.id ?? `md34-select-${uid}`)
 const labelId = computed(() => `${buttonId.value}-label`)
+const menuId = computed(() => `${buttonId.value}-menu`)
 const rootRef = ref<HTMLElement | null>(null)
 const buttonRef = ref<HTMLButtonElement | null>(null)
+const menuRef = ref<HTMLElement | null>(null)
 const open = ref(false)
 const activeIndex = ref(-1)
+const menuStyle = ref<Record<string, string>>({})
 
 const selectedOption = computed(() => props.options.find((option) => option.value === props.modelValue) ?? null)
 const supportingText = computed(() => props.error || props.hint || '')
@@ -135,12 +150,13 @@ function openMenu(index: number) {
   if (props.disabled) return
   open.value = true
   activeIndex.value = normalizeIndex(index)
+  updateMenuPosition()
 }
 
-function closeMenu() {
+function closeMenu(focusButton = true) {
   open.value = false
   activeIndex.value = -1
-  buttonRef.value?.focus()
+  if (focusButton) buttonRef.value?.focus()
 }
 
 function normalizeIndex(index: number) {
@@ -155,6 +171,36 @@ function selectOption(option: MdSelectOption) {
   emit('update:modelValue', option.value)
   emit('change', option.value, option)
   closeMenu()
+}
+
+function updateMenuPosition() {
+  nextTick(() => {
+    const button = buttonRef.value
+    if (!button || !open.value) return
+
+    const rect = button.getBoundingClientRect()
+    const viewportGap = 8
+    const menuHeight = Math.min(menuRef.value?.scrollHeight ?? props.options.length * 52 + 16, 280)
+    const spaceBelow = window.innerHeight - rect.bottom - viewportGap
+    const spaceAbove = rect.top - viewportGap
+    const openUp = spaceBelow < Math.min(menuHeight, 160) && spaceAbove > spaceBelow
+    const availableHeight = Math.max(96, Math.floor((openUp ? spaceAbove : spaceBelow) - viewportGap))
+    const maxHeight = Math.min(280, availableHeight)
+    const width = Math.max(rect.width, 160)
+    const left = Math.min(Math.max(viewportGap, rect.left), Math.max(viewportGap, window.innerWidth - width - viewportGap))
+    const top = openUp
+      ? Math.max(viewportGap, rect.top - Math.min(menuHeight, maxHeight) - 4)
+      : Math.min(window.innerHeight - viewportGap, rect.bottom + 4)
+
+    menuStyle.value = {
+      left: `${Math.round(left)}px`,
+      top: `${Math.round(top)}px`,
+      minWidth: `${Math.round(width)}px`,
+      maxWidth: `calc(100vw - ${viewportGap * 2}px)`,
+      maxHeight: `${Math.round(maxHeight)}px`,
+      transformOrigin: openUp ? 'bottom' : 'top'
+    }
+  })
 }
 
 function onMenuKeydown(event: KeyboardEvent) {
@@ -183,11 +229,21 @@ function onMenuKeydown(event: KeyboardEvent) {
 }
 
 function onDocumentClick(event: MouseEvent) {
-  if (!rootRef.value?.contains(event.target as Node)) {
-    open.value = false
+  const target = event.target as Node
+  if (!rootRef.value?.contains(target) && !menuRef.value?.contains(target)) {
+    closeMenu(false)
   }
 }
 
-onMounted(() => document.addEventListener('mousedown', onDocumentClick))
-onBeforeUnmount(() => document.removeEventListener('mousedown', onDocumentClick))
+onMounted(() => {
+  document.addEventListener('mousedown', onDocumentClick)
+  window.addEventListener('resize', updateMenuPosition)
+  window.addEventListener('scroll', updateMenuPosition, true)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', onDocumentClick)
+  window.removeEventListener('resize', updateMenuPosition)
+  window.removeEventListener('scroll', updateMenuPosition, true)
+})
 </script>
