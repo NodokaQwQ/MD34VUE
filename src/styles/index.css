@@ -67,14 +67,32 @@
   --md34-info-container: var(--md34-primary-hover);
   --md34-on-info-container: #0f0f19;
 
+  /* Tertiary role — global fallback so var(--md34-tertiary) resolves outside
+     the chrome/content scopes. */
+  --md34-tertiary: var(--md34-purple);
+  --md34-on-tertiary: var(--md34-on-purple);
+  --md34-tertiary-container: var(--md34-purple-container);
+  --md34-on-tertiary-container: var(--md34-on-purple-container);
+
+  /* Inverse roles — used by snackbar and plain tooltip. */
+  --md34-inverse-surface: #2f2f3a;
+  --md34-inverse-on-surface: #f1f1f1;
+  --md34-inverse-primary: #62d0cd;
+
+  /* Remaining MD3 surface roles. */
+  --md34-surface-dim: #d9d7d8;
+  --md34-surface-bright: #faf9f9;
+  --md34-surface-tint: var(--md34-primary);
+
+  /* Shape scale — Material Design 3 corner radius values. */
   --md34-shape-none: 0;
   --md34-shape-extra-small: 4px;
-  --md34-shape-small: 10px;
-  --md34-shape-medium: 16px;
-  --md34-shape-large: 22px;
-  --md34-shape-large-increased: 26px;
-  --md34-shape-extra-large: 32px;
-  --md34-shape-extra-large-increased: 40px;
+  --md34-shape-small: 8px;
+  --md34-shape-medium: 12px;
+  --md34-shape-large: 16px;
+  --md34-shape-large-increased: 20px;
+  --md34-shape-extra-large: 28px;
+  --md34-shape-extra-large-increased: 32px;
   --md34-shape-full: 999px;
   --md34-radius-xs: var(--md34-shape-extra-small);
   --md34-radius-sm: var(--md34-shape-small);
@@ -83,14 +101,107 @@
   --md34-radius-xl: var(--md34-shape-extra-large);
   --md34-radius-full: var(--md34-shape-full);
 
-  --md34-elevation-1: 0 1px 2px rgba(15, 15, 25, 0.08), 0 1px 3px rgba(15, 15, 25, 0.06);
-  --md34-elevation-2: 0 2px 6px rgba(15, 15, 25, 0.1), 0 1px 3px rgba(15, 15, 25, 0.08);
-  --md34-elevation-3: 0 8px 22px rgba(15, 15, 25, 0.14), 0 2px 6px rgba(15, 15, 25, 0.08);
+  /* Elevation — MD3 levels 0-5. */
+  --md34-elevation-0: none;
+  --md34-elevation-1: 0 1px 2px rgba(15, 15, 25, 0.3), 0 1px 3px 1px rgba(15, 15, 25, 0.15);
+  --md34-elevation-2: 0 1px 2px rgba(15, 15, 25, 0.3), 0 2px 6px 2px rgba(15, 15, 25, 0.15);
+  --md34-elevation-3: 0 4px 8px 3px rgba(15, 15, 25, 0.15), 0 1px 3px rgba(15, 15, 25, 0.3);
+  --md34-elevation-4: 0 6px 10px 4px rgba(15, 15, 25, 0.15), 0 2px 3px rgba(15, 15, 25, 0.3);
+  --md34-elevation-5: 0 8px 12px 6px rgba(15, 15, 25, 0.15), 0 4px 4px rgba(15, 15, 25, 0.3);
+
+  /* State layer opacities — MD3 spec. */
   --md34-state-hover: 0.08;
-  --md34-state-focus: 0.12;
-  --md34-state-pressed: 0.12;
-  --md34-motion-duration: 160ms;
-  --md34-motion-easing: cubic-bezier(0.2, 0, 0, 1);
+  --md34-state-focus: 0.1;
+  --md34-state-pressed: 0.1;
+  --md34-state-dragged: 0.16;
+
+  /* Disabled emphasis — MD3 spec. */
+  --md34-disabled-content-opacity: 0.38;
+  --md34-disabled-container-opacity: 0.12;
+
+  /* Motion — MD3 duration and easing tokens. */
+  --md34-motion-duration-short-1: 50ms;
+  --md34-motion-duration-short-2: 100ms;
+  --md34-motion-duration-short-3: 150ms;
+  --md34-motion-duration-short-4: 200ms;
+  --md34-motion-duration-medium-1: 250ms;
+  --md34-motion-duration-medium-2: 300ms;
+  --md34-motion-duration-medium-3: 350ms;
+  --md34-motion-duration-medium-4: 400ms;
+  --md34-motion-duration-long-1: 450ms;
+  --md34-motion-duration-long-2: 500ms;
+  --md34-motion-duration-long-3: 550ms;
+  --md34-motion-duration-long-4: 600ms;
+  --md34-motion-duration-extra-long-1: 700ms;
+  --md34-motion-duration-extra-long-2: 800ms;
+  --md34-motion-duration-extra-long-3: 900ms;
+  --md34-motion-duration-extra-long-4: 1000ms;
+  --md34-motion-easing-linear: cubic-bezier(0, 0, 1, 1);
+  --md34-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md34-motion-easing-standard-accelerate: cubic-bezier(0.3, 0, 1, 1);
+  --md34-motion-easing-standard-decelerate: cubic-bezier(0, 0, 0, 1);
+  --md34-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --md34-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --md34-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --md34-motion-duration: var(--md34-motion-duration-short-4);
+  --md34-motion-easing: var(--md34-motion-easing-standard);
+
+  /* Typography — MD3 type scale. */
+  --md34-font-brand: var(--md34-font-family);
+  --md34-font-plain: var(--md34-font-family);
+  --md34-font-weight-regular: 400;
+  --md34-font-weight-medium: 500;
+  --md34-font-weight-bold: 700;
+
+  --md34-display-large-size: 3.5625rem;
+  --md34-display-large-line-height: 4rem;
+  --md34-display-large-tracking: -0.015625rem;
+  --md34-display-medium-size: 2.8125rem;
+  --md34-display-medium-line-height: 3.25rem;
+  --md34-display-medium-tracking: 0;
+  --md34-display-small-size: 2.25rem;
+  --md34-display-small-line-height: 2.75rem;
+  --md34-display-small-tracking: 0;
+
+  --md34-headline-large-size: 2rem;
+  --md34-headline-large-line-height: 2.5rem;
+  --md34-headline-large-tracking: 0;
+  --md34-headline-medium-size: 1.75rem;
+  --md34-headline-medium-line-height: 2.25rem;
+  --md34-headline-medium-tracking: 0;
+  --md34-headline-small-size: 1.5rem;
+  --md34-headline-small-line-height: 2rem;
+  --md34-headline-small-tracking: 0;
+
+  --md34-title-large-size: 1.375rem;
+  --md34-title-large-line-height: 1.75rem;
+  --md34-title-large-tracking: 0;
+  --md34-title-medium-size: 1rem;
+  --md34-title-medium-line-height: 1.5rem;
+  --md34-title-medium-tracking: 0.009375rem;
+  --md34-title-small-size: 0.875rem;
+  --md34-title-small-line-height: 1.25rem;
+  --md34-title-small-tracking: 0.00625rem;
+
+  --md34-body-large-size: 1rem;
+  --md34-body-large-line-height: 1.5rem;
+  --md34-body-large-tracking: 0.03125rem;
+  --md34-body-medium-size: 0.875rem;
+  --md34-body-medium-line-height: 1.25rem;
+  --md34-body-medium-tracking: 0.015625rem;
+  --md34-body-small-size: 0.75rem;
+  --md34-body-small-line-height: 1rem;
+  --md34-body-small-tracking: 0.025rem;
+
+  --md34-label-large-size: 0.875rem;
+  --md34-label-large-line-height: 1.25rem;
+  --md34-label-large-tracking: 0.00625rem;
+  --md34-label-medium-size: 0.75rem;
+  --md34-label-medium-line-height: 1rem;
+  --md34-label-medium-tracking: 0.03125rem;
+  --md34-label-small-size: 0.6875rem;
+  --md34-label-small-line-height: 1rem;
+  --md34-label-small-tracking: 0.03125rem;
 }
 
 .dark,
