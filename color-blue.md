@@ -10,12 +10,12 @@
   #ffffff on-tertiary-light
   #dae2ff tertiary-container-light
   #3b4664 on-tertiary-container-light
-#f5fafb surface-light
-  #e9eff0 surface-container-light
-  #e3e9ea surface-container-high-ligh
-  #dee3e5 surface-container-highest-ligh
-  #171d1e on-surface-light
-#6f797a outline-light
+#f1f1f1 surface-light
+  #eae9e9 surface-container-light
+  #dddcdc surface-container-high-light
+  #cfcfce surface-container-highest-light
+  #1a1a1f on-surface-light
+#73737b outline-light
 
 #82d3e0 primary-dark
   #00363d on-primary-dark
@@ -29,9 +29,9 @@
   #24304d on-tertiary-dark
   #3b4664 tertiary-container-dark
   #dae2ff on-tertiary-container-dark
-#0e1415 surface-dark
-  #1b2122 surface-container-dark
-  #252b2c surface-container-high-dark
-  #303637 surface-container-highest-dark
-  #dee3e5 on-surface-dark
-#899294 outline-dark
+#0f0f19 surface-dark
+  #222229 surface-container-dark
+  #33333c surface-container-high-dark
+  #454550 surface-container-highest-dark
+  #e8e8ec on-surface-dark
+#8b8b94 outline-dark
